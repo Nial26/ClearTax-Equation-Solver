@@ -10,8 +10,28 @@ input_json = {
             "lhs": "x",
             "rhs": {
                 "op": "add",
-                "lhs" : 5,
-                "rhs" : 10
+                "lhs": 5,
+                "rhs": 10
+            }
+        }
+    },
+    "rhs": 21
+}
+
+lollable_input = {
+    "op": "equal",
+    "lhs": {
+        "op": "add",
+        "lhs": 1,
+        "rhs": {
+            "op": "multiply",
+            "rhs": {"op": "add",
+                    "lhs": "x",
+                    "rhs": 10},
+            "lhs": {
+                "op": "add",
+                "lhs": 5,
+                "rhs": 10
             }
         }
     },
@@ -20,44 +40,56 @@ input_json = {
 
 
 def parse_eqn(node):
-    if type(node) == int or type(node) == str:
-        return str(node) 
+    if type(node) == int or type(node) == str:  # The end nodes can only be x or integers
+        return str(node)
     else:
-        talk_to_symbol = {"add" : "+", "subtract": "-", "multiply" : "*", "divide" : "/", "equal" : "="}
+        talk_to_symbol = {"add": "+", "subtract": "-",
+                          "multiply": "*", "divide": "/", "equal": "="}
         operation = node["op"]
         operation = talk_to_symbol[operation]
-        return "(" + parse_eqn(node["lhs"]) + " " +  operation + " " + parse_eqn(node["rhs"]) + ")"
-
-
-def serialize_eqn(eqn):
-    
-    eqn = eqn[1:len(eqn)-1] #Remove the brackets at the beginning and at the end
-    
-    stack = []
-    stack.append(eqn[0])
-    lhs_begin = 0
-    lhs_end = 0
-    while len(stack) != 0 and (lhs_end < len(eqn) - 1):
-        lhs_end += 1
-        if eqn[lhs_end] == "(":
-            stack.append("(")
-        elif eqn[lhs_end] == ")":
-            stack.pop()
-    lhs = eqn[lhs_begin: lhs_end].strip()
-
-    operation_begin = lhs_end + 1
-    operation_end = operation_begin
-    while eqn[operation_end] not in ["=", "+", "-", "*", "/"]:
-        operation_end += 1
-    operation = eqn[operation_begin: operation_end+1].strip()
-
-    rhs = eqn[operation_end+1:].strip()
-
-    print(lhs)
-    print(operation)
-    print(rhs)
+        return "(" + parse_eqn(node["lhs"]) + " " + operation + " " + parse_eqn(node["rhs"]) + ")"
 
 
 
-#print(parse_eqn(input_json))
-print(serialize_eqn("((1 + (x * (5 + 10))) = 21)"))
+inputi_json = {
+    "op": "equal",
+    "lhs": {
+        "op": "add",
+        "lhs": 1,
+        "rhs": {
+            "op": "multiply",
+            "lhs": "x",
+            "rhs": 10
+        }
+    },
+    "rhs": 21
+}
+
+
+def solve_eqn(lhs, rhs):
+    imminent_operation = lhs["op"]
+    opposite_operation = {"add": "subtract", "subtract": "add",
+                          "multiply": "divide", "divide": "multiply"}
+    if lhs["lhs"] == "x":
+        rhs = '{"lhs": ' + rhs + ',"op":"'+ opposite_operation[imminent_operation] + '", "rhs":' + str(lhs["rhs"]) + '}'
+        return rhs
+    elif lhs["rhs"] == "x":
+        rhs = '{"lhs": ' + rhs + ',"op":"'+ opposite_operation[imminent_operation] + '", "rhs":' + str(lhs["lhs"]) + '}'
+        return rhs
+    elif type(lhs["lhs"]) == int:
+        rhs = '{"lhs": ' + rhs + ',"op":"'+ opposite_operation[imminent_operation] + '", "rhs":' + str(lhs["lhs"]) + '}'
+        return solve_eqn(lhs["rhs"], rhs)
+    elif type(lhs["rhs"]) == int:
+        rhs = '{"lhs": ' + rhs + ',"op":"'+ opposite_operation[imminent_operation] + '", "rhs":' + str(lhs["rhs"]) + '}'
+        return solve_eqn(lhs["lhs"], rhs)
+    else:
+        # the_side_without_x
+        rhs = '{"lhs": ' + rhs + ',"op":"'+ opposite_operation[imminent_operation] + '", "rhs":"blah"}'
+        return rhs
+
+
+# print(parse_eqn(input_json))
+print(solve_eqn(input_json["lhs"], str(input_json["rhs"])))
+
+mew = {"lhs": {"lhs": 21,"op":"subtract", "rhs":1},"op":"divide", "rhs":{'lhs': 5, 'op': 'add', 'rhs': 10}}
+print(parse_eqn(mew))
