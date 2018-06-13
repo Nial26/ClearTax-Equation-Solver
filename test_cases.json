@@ -1,0 +1,106 @@
+{
+    "1": {
+        "comment": "Has a composite Node attached with x",
+        "op": "equal",
+        "lhs": {
+            "op": "add",
+            "lhs": 1,
+            "rhs": {
+                "op": "multiply",
+                "lhs": "x",
+                "rhs": {
+                    "op": "add",
+                    "lhs": 5,
+                    "rhs": 10
+                }
+            }
+        },
+        "rhs": 21,
+        "expected_output": "((1 + (x * (5 + 10))) = 21)",
+        "solved_eqn_output": "((21 - 1) / (5 + 10))" 
+    },
+    "2": {
+        "comment": "Both LHS and RHS are composite",
+        "op": "equal",
+        "lhs": {
+            "op": "add",
+            "lhs": 1,
+            "rhs": {
+                "op": "multiply",
+                "rhs": {
+                    "op": "add",
+                    "lhs": "x",
+                    "rhs": 10
+                },
+                "lhs": {
+                    "op": "add",
+                    "lhs": 5,
+                    "rhs": 10
+                }
+            }
+        },
+        "rhs": 21,
+        "expected_output": "((1 + ((5 + 10) * (x + 10))) = 21)",
+        "solved_eqn_output": "(((21 - 1) / (5 + 10)) - 10)"
+    },
+    "3": {
+        "comment": "The given test case",
+        "op": "equal",
+        "lhs": {
+            "op": "add",
+            "lhs": 1,
+            "rhs": {
+                "op": "multiply",
+                "lhs": "x",
+                "rhs": 10
+            }
+        },
+        "rhs": 21,
+        "expected_output": "((1 + (x * 10)) = 21)",
+        "solved_eqn_output": "((21 - 1) / 10)"
+    },
+    "4": {
+        "comment": "Super Complex case with nested Eqns and all those fun stuff",
+        "op": "equal",
+        "lhs": {
+            "op": "multiply",
+            "lhs": {
+                "op": "subtract",
+                "lhs": {
+                    "op": "multiply",
+                    "lhs": {
+                        "op": "add",
+                        "lhs": 1,
+                        "rhs": {
+                            "op": "divide",
+                            "lhs": {
+                                "op": "multiply",
+                                "lhs": {
+                                    "op": "add",
+                                    "lhs": "x",
+                                    "rhs": 3
+                                },
+                                "rhs": {
+                                    "op": "add",
+                                    "lhs": 5,
+                                    "rhs": {
+                                        "op": "divide",
+                                        "lhs": 3,
+                                        "rhs": 7
+                                    }
+                                }
+                            },
+                            "rhs": 3
+                        }
+                    },
+                    "rhs": 4
+                },
+                "rhs": 73
+            },
+            "rhs": 5
+        },
+        "rhs": 7,
+        "expected_output": "(((((1 + (((x + 3) * (5 + (3 / 7))) / 3)) * 4) - 73) * 5) = 7)",
+        "solved_eqn_output": "(((((((7 / 5) + 73) / 4) - 1) * 3) / (5 + (3 / 7))) - 3)"
+    }
+}
