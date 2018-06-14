@@ -16,4 +16,5 @@ So if you want your solved equation in infix form, just pass it through the pars
 `python tester.py`
 
 ### Miscellaneous
-Please feel free to contact me for any issues or bugs!
+Please feel free to contact me for any issues or bugs!            
+Also the Problem was pretty interesting, I enjoyed solving it!
